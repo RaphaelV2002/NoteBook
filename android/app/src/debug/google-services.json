@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "932301624284",
+    "project_id": "unihelp-a351e",
+    "storage_bucket": "unihelp-a351e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:932301624284:android:cf7eb3cf849b1197193519",
+        "android_client_info": {
+          "package_name": "com.example.unihelp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCxLzhiGRPUj2SJuIEAdP_HuR5lfzd1gw0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
