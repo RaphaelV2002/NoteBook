@@ -3,7 +3,7 @@ import '../UserProfile.dart';
 
 abstract class ApiStates {}
 
-class InitialState extends ApiStates {}
+class MenuPageState extends ApiStates {}
 
 class LoadingState extends ApiStates {}
 
@@ -19,4 +19,8 @@ class SuccessfulGoogleSignInState extends ApiStates {
   SuccessfulGoogleSignInState(this.userProfile);
 }
 
-class ListProfilesEvent extends ApiStates {}
+class ListProfilesState extends ApiStates {
+  final List<UserProfile> profiles;
+
+  ListProfilesState(this.profiles);
+}

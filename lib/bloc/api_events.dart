@@ -24,5 +24,6 @@ class SuccessfulGoogleSignInEvent extends ApiEvents {
   });
 }
 
-class ListProfilesEvent extends ApiEvents {
-}
+class ListProfilesEvent extends ApiEvents {}
+
+class MenuPageEvent extends ApiEvents {}

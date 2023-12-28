@@ -3,13 +3,19 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/api_bloc.dart';
 import '../bloc/api_states.dart';
-import '../create_account_page.dart';
+import 'menu_page.dart';
 import '../ProfileScreen.dart';
+import 'ListProfiles.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() {
+void main() async {
   GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(MyApp());
 }
 
@@ -63,12 +69,10 @@ class _MyHomePageState extends State<MyHomePage> {
         return ProfileScreen(
             userProfile:
                 state.userProfile); // Передача userProfile в ProfileScreen
-      } else if (state is SuccessfulGoogleSignInState) {
-        return ProfileScreen(
-            userProfile:
-            state.userProfile); // Передача userProfile в ProfileScreen
+      } else if (state is ListProfilesState) {
+        return ListProfiles(userProfiles: state.profiles);
       } else {
-        return CreateAccountPage();
+        return menuPage();
       }
     });
   }
