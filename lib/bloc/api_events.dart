@@ -1,29 +1,23 @@
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:unihelp/bloc/api_states.dart';
-import '../UserProfile.dart';
+import '../Note.dart';
 
 abstract class ApiEvents {}
 
-class CreateAccountEvent extends ApiEvents {
-  final String username;
-  final String email;
-  final String password;
+class NoteListEvent extends ApiEvents {}
 
-  CreateAccountEvent({
-    required this.username,
-    required this.email,
-    required this.password,
-  });
+class SaveNoteEvent extends ApiEvents {
+  final Note note;
+
+  SaveNoteEvent(this.note);
+
+
 }
 
-class SuccessfulGoogleSignInEvent extends ApiEvents {
-  final UserProfile userProfile;
+class UpdateNoteEvent extends ApiEvents {
+  final Note note;
 
-  SuccessfulGoogleSignInEvent({
-    required this.userProfile,
-  });
+  UpdateNoteEvent(this.note);
+
+
 }
-
-class ListProfilesEvent extends ApiEvents {}
-
-class MenuPageEvent extends ApiEvents {}

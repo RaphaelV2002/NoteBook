@@ -1,9 +1,9 @@
 import 'package:google_sign_in/google_sign_in.dart';
-import '../UserProfile.dart';
+import '../Note.dart';
 
 abstract class ApiStates {}
 
-class MenuPageState extends ApiStates {}
+class InitState extends ApiStates {}
 
 class LoadingState extends ApiStates {}
 
@@ -13,14 +13,12 @@ class ErrorState extends ApiStates {
   // ErrorState(this.error);
 }
 
-class SuccessfulGoogleSignInState extends ApiStates {
-  final UserProfile userProfile;
 
-  SuccessfulGoogleSignInState(this.userProfile);
+
+class NoteListState extends ApiStates {
+  final List<Note> notes;
+
+  NoteListState(this.notes);
 }
-
-class ListProfilesState extends ApiStates {
-  final List<UserProfile> profiles;
-
-  ListProfilesState(this.profiles);
+class SaveNoteState extends ApiStates {
 }
