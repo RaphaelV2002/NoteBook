@@ -10,14 +10,24 @@ class SaveNoteEvent extends ApiEvents {
   final Note note;
 
   SaveNoteEvent(this.note);
-
-
 }
 
 class UpdateNoteEvent extends ApiEvents {
   final Note note;
 
   UpdateNoteEvent(this.note);
-
-
 }
+
+class CreateEditScreenEvent extends ApiEvents {
+  final Note? note;
+
+  CreateEditScreenEvent({this.note});
+}
+
+class NoteDetailsEvent extends ApiEvents {
+  final Note note;
+
+  NoteDetailsEvent(this.note);
+}
+
+class NavigateBackEvent extends ApiEvents {}

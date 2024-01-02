@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../bloc/api_events.dart';
 import '../bloc/api_bloc.dart';
 import '../bloc/api_states.dart';
 import 'NoteList.dart';
+import 'CreateEditNoteScreen.dart';
+import 'NoteDetailsScreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
 // import 'package:unihelp/CreateEditNoteScreen.dart';
 void main() async {
-  GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -45,27 +46,32 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   @override
+  void initState() {
+    super.initState();
+    BlocProvider.of<ApiBloc>(context).add(NoteListEvent());
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: NoteListScreen(),
+
+      body: buildBloc(),
     );
   }
 
-// Widget buildBloc() {
-//   return BlocBuilder<ApiBloc, ApiStates>(builder: (context, state) {
-//     if (state is LoadingState) {
-//       return Center(child: CircularProgressIndicator());
-//     } else if (state is SuccessfulGoogleSignInState) {
-//       return ProfileScreen(
-//           userProfile:
-//               state.userProfile); // Передача userProfile в ProfileScreen
-//     } else if (state is ListProfilesState) {
-//       return ListProfiles(userProfiles: state.profiles);
-//     } else if (state is MenuPageState) {
-//       return menuPage();
-//     } else {
-//       return Text("Nothing");
-//     }
-//   });
-// }
+  Widget buildBloc() {
+    return BlocBuilder<ApiBloc, ApiStates>(builder: (context, state) {
+      if (state is LoadingState) {
+        return Center(child: CircularProgressIndicator());
+      } else if (state is NoteListState) {
+        return NoteListScreen(context,state.notes);
+      } else if (state is CreateEditScreenState) {
+        return CreateEditNoteScreen(note: state.note);
+      } else if (state is NoteDetailsState) {
+        return NoteDetailsScreen(context, state.note);
+      } else {
+        return Text("Nothing");
+      }
+    });
+  }
 }

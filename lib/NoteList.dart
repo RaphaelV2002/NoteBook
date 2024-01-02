@@ -7,48 +7,26 @@ import 'bloc/api_events.dart';
 import 'NoteDetailsScreen.dart';
 import 'CreateEditNoteScreen.dart';
 import 'package:cloud_firestore_platform_interface/src/timestamp.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
-class NoteListScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    BlocProvider.of<ApiBloc>(context).add(NoteListEvent());
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Note List'),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Обработка нажатия на кнопку
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => CreateEditNoteScreen(),
-            ),
-          );
-        },
-        child: Icon(Icons.add),
-      ),
-      body: BlocBuilder<ApiBloc, ApiStates>(
-        builder: (context, state) {
-          print(state);
-          if (state is LoadingState) {
-            return Center(child: CircularProgressIndicator());
-          } else if (state is NoteListState) {
-            return buildNoteGrid(state.notes);
-          } else {
-            return Center(child: Text('Failed to load notes'));
-          }
-        },
-      ),
-    );
-  }
-
-  Widget buildNoteGrid(List<Note> notes) {
-    return GridView.builder(
+Widget NoteListScreen(context,List<Note> notes) {
+  return Scaffold(
+    appBar: AppBar(
+      title: Text('Note List'),
+    ),
+    floatingActionButton: FloatingActionButton(
+      onPressed: () {
+        BlocProvider.of<ApiBloc>(context).add(CreateEditScreenEvent());
+      },
+      child: Icon(Icons.add),
+    ),
+    body: GridView.builder(
+      shrinkWrap: true,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2, // Количество столбцов в сетке
-        crossAxisSpacing: 8.0, // Пространство между столбцами
-        mainAxisSpacing: 8.0, // Пространство между строками
+        crossAxisSpacing: 1.0, // Пространство между столбцами
+        mainAxisSpacing: 1.0, // Пространство между строками
       ),
       itemCount: notes.length,
       itemBuilder: (context, index) {
@@ -56,15 +34,9 @@ class NoteListScreen extends StatelessWidget {
         return Card(
           child: InkWell(
             onTap: () {
-              // Переход к экрану деталей заметки при нажатии
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => NoteDetailsScreen(note: note),
-                ),
-              );
+              BlocProvider.of<ApiBloc>(context).add(NoteDetailsEvent(note));
             },
-            child: Padding(
+            child: Container(
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,13 +44,24 @@ class NoteListScreen extends StatelessWidget {
                   Text(
                     note.title,
                     style: TextStyle(fontWeight: FontWeight.bold),
+                    overflow: TextOverflow.ellipsis, // Обрезать текст и добавить многоточие, если он слишком длинный
+                    maxLines: 1, // Ограничить количество строк
                   ),
                   SizedBox(height: 8),
-                  Text(note.content),
-                  SizedBox(height: 8),
                   Text(
-                    'Created on: ${note.creationTime.toDate().toString()}', // Вывод времени создания
-                    style: TextStyle(color: Colors.grey),
+                    note.content,
+                    overflow: TextOverflow.ellipsis, // Обрезать текст и добавить многоточие, если он слишком длинный
+                    maxLines: 3, // Ограничить количество строк
+                  ),
+                  Expanded(child: Container()),
+                  // Добавляем Expanded, чтобы разместить дату и время внизу
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      DateFormat('dd MMMM yyyy HH:mm')
+                          .format(note.creationTime.toDate()),
+                      style: TextStyle(color: Colors.grey),
+                    ),
                   ),
                 ],
               ),
@@ -86,6 +69,6 @@ class NoteListScreen extends StatelessWidget {
           ),
         );
       },
-    );
-  }
+    ),
+  );
 }

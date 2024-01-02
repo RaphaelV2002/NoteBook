@@ -1,36 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:unihelp/bloc/api_events.dart';
 import '../../Note.dart';
 import 'CreateEditNoteScreen.dart';
-
-class NoteDetailsScreen extends StatelessWidget {
-  final Note note;
-
-  NoteDetailsScreen({required this.note});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Note Details'),
-      ),
-      floatingActionButton: FloatingActionButton(
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../bloc/api_bloc.dart';
+Widget NoteDetailsScreen(BuildContext context, Note note) {
+  return Scaffold(
+    appBar: AppBar(
+      title: Text('Note Details'),
+      leading:  BackButton(
         onPressed: () {
-          // Обработка нажатия на кнопку
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => CreateEditNoteScreen(note: note),
-            ),
-          );
+          BlocProvider.of<ApiBloc>(context).add(NoteListEvent());
         },
-        child: Icon(Icons.add),
       ),
-      body: buildPadding(),
-    );
-  }
-
-  Padding buildPadding() {
-    return Padding(
+    ),
+    floatingActionButton: FloatingActionButton(
+      onPressed: () {
+        BlocProvider.of<ApiBloc>(context)
+            .add(CreateEditScreenEvent(note: note));
+      },
+      child: Icon(Icons.edit),
+    ),
+    body: Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -49,6 +40,6 @@ class NoteDetailsScreen extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
+    ),
+  );
 }

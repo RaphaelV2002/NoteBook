@@ -10,20 +10,21 @@ import 'api_states.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ApiBloc extends Bloc<ApiEvents, ApiStates> {
-  final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email']);
 
   ApiBloc() : super(NoteListState([])) {
     on<NoteListEvent>(_getNoteList);
     on<SaveNoteEvent>(_saveNote);
     on<UpdateNoteEvent>(_updateNote);
+    on<CreateEditScreenEvent>(_createEditScreen);
+    on<NoteDetailsEvent>(_noteDetails);
   }
 
   _getNoteList(NoteListEvent event, Emitter<ApiStates> emitter) async {
+    emit(LoadingState());
     try {
       // Получение данных из Firestore
       List<Note> notes = await getNotes();
 
-      // Отправка списка профилей в состояние ListProfilesState
       emitter(NoteListState(notes));
     } catch (error) {
       print(error);
@@ -40,23 +41,23 @@ class ApiBloc extends Bloc<ApiEvents, ApiStates> {
               title: doc['title'],
               content: doc['content'],
               creationTime: doc['creationTime'],
-
             ))
         .toList();
     return notes;
   }
 
   _saveNote(SaveNoteEvent event, Emitter<ApiStates> emit) async {
+    emit(LoadingState());
     try {
       // Сохранение записи в Firestore
       await FirebaseFirestore.instance.collection('note').add({
         'title': event.note.title,
         'content': event.note.content,
-        'creationTime': DateTime.now(),
+        'creationTime': Timestamp.now(),
         // Другие поля записи, если необходимо
       });
       List<Note> notes = await getNotes();
-      emit(NoteListState([]..addAll(notes)));
+      emit(NoteListState(notes));
     } catch (error) {
       print(error);
       emit(ErrorState());
@@ -64,6 +65,7 @@ class ApiBloc extends Bloc<ApiEvents, ApiStates> {
   }
 
   _updateNote(UpdateNoteEvent event, Emitter<ApiStates> emit) async {
+    emit(LoadingState());
     try {
       // Обновление записи в Firestore
       await FirebaseFirestore.instance
@@ -72,13 +74,22 @@ class ApiBloc extends Bloc<ApiEvents, ApiStates> {
           .update({
         'title': event.note.title,
         'content': event.note.content,
-        'creationTime': DateTime.now(),
+        'creationTime': Timestamp.now(),
         // Другие поля записи, если необходимо
       });
-      emit(NoteListState([]));
+      List<Note> notes = await getNotes();
+      emit(NoteListState(notes));
     } catch (error) {
       print(error);
       emit(ErrorState());
     }
   }
+
+  _createEditScreen(CreateEditScreenEvent event, Emitter<ApiStates> emit) {
+    emit(CreateEditScreenState(event.note));
+  }
+  _noteDetails(NoteDetailsEvent event, Emitter<ApiStates> emit) {
+    emit(NoteDetailsState(event.note));
+  }
+
 }
