@@ -5,11 +5,13 @@ class Note {
   final String title;
   final String content;
   final Timestamp creationTime;
+  final Timestamp? reminderDate;
 
   Note({
     required this.id,
     required this.title,
     required this.content,
     required this.creationTime,
+    this.reminderDate,
   });
 }
