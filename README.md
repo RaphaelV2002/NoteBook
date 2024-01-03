@@ -1,6 +1,6 @@
-# unihelp
+# NoteBook
 
-A new Flutter project.
+Simple NoteBook
 
 ## Getting Started
 
